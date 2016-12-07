@@ -1,0 +1,29 @@
+{
+    "name": "matiasnamendola/slimpower-auth-core",
+    "description": "Authentication core for SlimPower Framework.",
+    "keywords": [
+        "php", "slimpower", "slim", "auth"
+    ],
+    "homepage": "https://github.com/matiasnamendola/slimpower-auth-core",
+    "type": "library",
+    "version": "v0.0.1-alpha",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matias Nahuel Améndola",
+            "email": "soporte.esolutions@gmail.com",
+            "homepage": "http://node.software/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "matiasnamendola/slimpower-slim": "master-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "SlimPower\\Authentication\\": "src"
+        }
+    }
+}
