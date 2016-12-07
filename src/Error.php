@@ -1,15 +1,17 @@
 <?php
 
-/**
+/*
  * This file is part of Slim Authentication core
  *
- * @category   Authentication
- * @package    SlimPower
- * @subpackage Interfaces
- * @author     Matias Nahuel Améndola <soporte.esolutions@gmail.com>
- * @link       https://github.com/MatiasNAmendola/slimpower-auth-core
- * @license    https://github.com/MatiasNAmendola/slimpower-auth-core/blob/master/LICENSE.md
- * @since      0.0.1
+ * PHP version 5.3
+ *
+ * @category    Authentication
+ * @package     SlimPower
+ * @subpackage  Authentication
+ * @author      Matias Nahuel Améndola <soporte.esolutions@gmail.com>
+ * @link        https://github.com/matiasnamendola/slimpower-jwt-auth
+ * @license     http://www.opensource.org/licenses/mit-license.html MIT License
+ * @copyright   2016
  * 
  * MIT LICENSE
  *
@@ -33,19 +35,38 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication\Interfaces;
+namespace SlimPower\Authentication;
 
-interface AuthenticatorInterface {
+class Error {
 
-    /**
-     * @return Error
-     */
-    public function getError();
+    const ERROR_MSG = "Authentication failed";
 
-    /**
-     * Invoke
-     * @param array $arguments Arguments
-     * @return boolean
-     */
-    public function __invoke(array $arguments);
+    public $status = 401;
+    public $description = self::ERROR_MSG;
+    public $code = 0;
+
+    public function getStatus() {
+        return $this->status;
+    }
+
+    public function getDescription() {
+        return $this->description;
+    }
+
+    public function getCode() {
+        return $this->code;
+    }
+
+    public function setStatus($status) {
+        $this->status = $status;
+    }
+
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+
+    public function setCode($code) {
+        $this->code = $code;
+    }
+
 }

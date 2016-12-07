@@ -39,9 +39,7 @@ namespace SlimPower\Authentication;
 
 abstract class AbstractAuthentication extends \Slim\Middleware {
 
-    const ERROR_MSG = "Authentication failed";
-
-    protected $message = ''; /* Last error message. */
+    protected $error = null; /* Last error */
     protected $rules = array();
     protected $options = array();
     protected $data = array();
@@ -144,7 +142,10 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
         }
 
         /* Check if user authenticates. */
-        if (false === $this->options["authenticator"]($this->data)) {
+        $authenticator = $this->options["authenticator"];
+
+        if (false === $authenticator($this->data)) {
+            $this->error = $authenticator->getError();
             $this->showError();
             return;
         }
@@ -158,7 +159,8 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
         if (is_callable($this->options["callback"])) {
             $params = $this->getParams();
             if (false === $this->options["callback"]($params)) {
-                $this->message = "Callback returned false";
+                $this->error = new Error();
+                $this->error->setDescription("Callback returned false");
                 $this->showError();
                 return;
             }
@@ -226,14 +228,12 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
      * Show error
      */
     protected function showError() {
-        if (empty($this->message)) {
-            $this->message = self::ERROR_MSG;
+        if (!($this->error instanceof Error)) {
+            $this->error = new Error();
         }
 
         $this->app->response->status(401);
-        $this->error(array(
-            "message" => $this->message
-        ));
+        $this->callError($this->error);
     }
 
     /**
@@ -256,9 +256,9 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
      *
      * @return void
      */
-    public function error($params) {
+    public function callError(Error $error) {
         if (is_callable($this->options["error"])) {
-            $this->options["error"]($params);
+            $this->options["error"]($error);
         }
     }
 
