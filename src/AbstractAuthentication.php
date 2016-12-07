@@ -132,7 +132,7 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
 
         /* If userdata cannot be found return with 401 Unauthorized. */
         if ((false === $this->data = $this->fetchData()) && !$freePass) {
-            $this->showError();
+            $this->callError();
             return;
         }
 
@@ -146,12 +146,12 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
 
         if (false === $authenticator($this->data)) {
             $this->error = $authenticator->getError();
-            $this->showError();
+            $this->callError();
             return;
         }
 
         if (!$this->customValidation()) {
-            $this->showError();
+            $this->callError();
             return;
         }
 
@@ -161,7 +161,7 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
             if (false === $this->options["callback"]($params)) {
                 $this->error = new Error();
                 $this->error->setDescription("Callback returned false");
-                $this->showError();
+                $this->callError();
                 return;
             }
         }
@@ -225,18 +225,6 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
     }
 
     /**
-     * Show error
-     */
-    protected function showError() {
-        if (!($this->error instanceof Error)) {
-            $this->error = new Error();
-        }
-
-        $this->app->response->status(401);
-        $this->callError($this->error);
-    }
-
-    /**
      * Check if middleware should authenticate
      *
      * @return boolean True if middleware should authenticate.
@@ -256,9 +244,16 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
      *
      * @return void
      */
-    public function callError(Error $error) {
+    public function callError() {
+        if (!($this->error instanceof Error)) {
+            $this->error = new Error();
+        }
+        
+        $status = $this->error->getStatus();
+        $this->app->response->status($status);
+        
         if (is_callable($this->options["error"])) {
-            $this->options["error"]($error);
+            $this->options["error"]($this->error);
         }
     }
 
