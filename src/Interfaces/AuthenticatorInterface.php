@@ -38,6 +38,11 @@ namespace SlimPower\Authentication\Interfaces;
 interface AuthenticatorInterface {
 
     /**
+     * @return array
+     */
+    public function getData();
+
+    /**
      * @return Error
      */
     public function getError();
