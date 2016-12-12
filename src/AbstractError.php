@@ -40,6 +40,16 @@ namespace SlimPower\Authentication;
 abstract class AbstractError implements Interfaces\ErrorInterface {
 
     /**
+     * SlimPower instance
+     * @var \SlimPower\Slim\Slim 
+     */
+    protected $app = null;
+
+    public function __construct(\SlimPower\Slim\Slim $app) {
+        $this->app = $app;
+    }
+
+    /**
      * Invoke
      * @param \SlimPower\Authentication\Error $error Error
      */
