@@ -1,11 +1,11 @@
 <?php
 
 /**
- * This file is part of Slim Authentication core
+ * This file is part of Slim HTTP Basic Authentication middleware
  *
  * @category   Authentication
  * @package    SlimPower
- * @subpackage Interfaces
+ * @subpackage Authentication
  * @author     Matias Nahuel Améndola <soporte.esolutions@gmail.com>
  * @link       https://github.com/MatiasNAmendola/slimpower-auth-core
  * @license    https://github.com/MatiasNAmendola/slimpower-auth-core/blob/master/LICENSE.md
@@ -33,26 +33,37 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication\Interfaces;
+namespace SlimPower\Authentication;
 
-interface AuthenticatorInterface {
+class DemoAuthenticator extends AbstractAuthenticator implements Interfaces\AuthenticatorInterface {
+
+    const KEY_USER = "user";
+    const KEY_PWD = "password";
+    const VAL_USER = "admin";
+    const VAL_PWD = "demo";
 
     /**
-     * Get user data
+     * Get default options
      * @return array
      */
-    public function getData();
+    protected function getDefaultOptions() {
+        return array();
+    }
 
     /**
-     * Get error
-     * @return \SlimPower\Authentication\Error|null
-     */
-    public function getError();
-
-    /**
-     * Invoke
+     * Authenticate
      * @param array $arguments Arguments
-     * @return boolean
+     * @return array|null User data or null
      */
-    public function __invoke(array $arguments);
+    protected function authenticate(array $arguments) {
+        $success = $arguments[self::KEY_USER] == self::VAL_USER && $arguments[self::KEY_PWD] == self::VAL_PWD;
+
+        if (!$success) {
+            $this->error = new \SlimPower\Authentication\Error();
+            return null;
+        } else {
+            return array('user' => self::VAL_USER);
+        }
+    }
+
 }

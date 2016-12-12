@@ -1,17 +1,15 @@
 <?php
 
-/*
+/**
  * This file is part of Slim Authentication core
  *
- * PHP version 5.3
- *
- * @category    Authentication
- * @package     SlimPower
- * @subpackage  Authentication
- * @author      Matias Nahuel Améndola <soporte.esolutions@gmail.com>
- * @link        https://github.com/MatiasNAmendola/slimpower-auth-core
- * @license     http://www.opensource.org/licenses/mit-license.html MIT License
- * @copyright   2016
+ * @category   Authentication
+ * @package    SlimPower
+ * @subpackage Authentication
+ * @author     Matias Nahuel Améndola <soporte.esolutions@gmail.com>
+ * @link       https://github.com/MatiasNAmendola/slimpower-auth-core
+ * @license    https://github.com/MatiasNAmendola/slimpower-auth-core/blob/master/LICENSE.md
+ * @since      0.0.1
  * 
  * MIT LICENSE
  *
@@ -37,25 +35,37 @@
 
 namespace SlimPower\Authentication;
 
-class RequestMethodRule implements Interfaces\RuleInterface {
+class ArrayAuthenticator extends AbstractAuthenticator implements Interfaces\AuthenticatorInterface {
 
-    protected $options = array(
-        "passthrough" => array("OPTIONS")
-    );
+    /**
+     * Get default options
+     * @return array
+     */
+    protected function getDefaultOptions() {
+        $options = array(
+            "users" => array()
+        );
 
-    public function __construct($options = array()) {
-        $this->options = array_merge($this->options, $options);
+        return $options;
     }
 
     /**
-     * Invoke
-     * @param \SlimPower\Slim\Slim $app SlimPower instance
-     * @return boolean
+     * Authenticate
+     * @param array $arguments Arguments
+     * @return array|null User data or null
      */
-    public function __invoke(\SlimPower\Slim\Slim $app) {
-        //$environment = \Slim\Environment::getInstance();
-        $environment = $app->environment;
-        return !in_array($environment["REQUEST_METHOD"], $this->options["passthrough"]);
+    protected function authenticate(array $arguments) {
+        $user = $arguments["user"];
+        $password = $arguments["password"];
+
+        $success = isset($this->options["users"][$user]) && $this->options["users"][$user] === $password;
+
+        if (!$success) {
+            $this->error = new \SlimPower\Authentication\Error();
+            return null;
+        } else {
+            return array('user' => $user);
+        }
     }
 
 }

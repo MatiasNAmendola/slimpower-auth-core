@@ -9,7 +9,7 @@
  * @package     SlimPower
  * @subpackage  Authentication
  * @author      Matias Nahuel Améndola <soporte.esolutions@gmail.com>
- * @link        https://github.com/matiasnamendola/slimpower-jwt-auth
+ * @link        https://github.com/MatiasNAmendola/slimpower-auth-core
  * @license     http://www.opensource.org/licenses/mit-license.html MIT License
  * @copyright   2016
  * 
