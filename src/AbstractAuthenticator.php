@@ -115,11 +115,11 @@ abstract class AbstractAuthenticator implements Interfaces\AuthenticatorInterfac
 
         if (!is_null($data)) {
             $this->data = $data;
-            $this->app->flashNow('jwtdata', $data);
+            $this->app->jwtdata = $data;
             return true;
         } else {
             $this->data = array();
-            $this->app->flashNow('jwtdata', null);
+            $this->app->jwtdata = null;
             return false;
         }
     }
