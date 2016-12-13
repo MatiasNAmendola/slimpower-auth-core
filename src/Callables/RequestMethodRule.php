@@ -37,7 +37,9 @@
 
 namespace SlimPower\Authentication\Callables;
 
-class RequestMethodRule implements Interfaces\RuleInterface {
+use SlimPower\Authentication\Interfaces\RuleInterface;
+
+class RequestMethodRule implements RuleInterface {
 
     protected $options = array(
         "passthrough" => array("OPTIONS")

@@ -35,7 +35,9 @@
 
 namespace SlimPower\Authentication\Abstracts;
 
-abstract class CallableAuthenticator implements Interfaces\AuthenticatorInterface {
+use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
+
+abstract class CallableAuthenticator implements AuthenticatorInterface {
 
     /**
      * SlimPower instance

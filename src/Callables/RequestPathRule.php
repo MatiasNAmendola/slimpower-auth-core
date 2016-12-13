@@ -35,7 +35,9 @@
 
 namespace SlimPower\Authentication\Callables;
 
-class RequestPathRule implements Interfaces\RuleInterface {
+use SlimPower\Authentication\Interfaces\RuleInterface;
+
+class RequestPathRule implements RuleInterface {
 
     protected $options = array(
         "path" => array("/"),

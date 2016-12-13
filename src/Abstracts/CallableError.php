@@ -37,7 +37,9 @@
 
 namespace SlimPower\Authentication\Abstracts;
 
-abstract class CallableError implements Interfaces\ErrorInterface {
+use SlimPower\Authentication\Interfaces\ErrorInterface;
+
+abstract class CallableError implements ErrorInterface {
 
     /**
      * SlimPower instance
