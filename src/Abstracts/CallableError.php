@@ -55,7 +55,7 @@ abstract class CallableError implements ErrorInterface {
      * Invoke
      * @param \SlimPower\Authentication\Error $error Error
      */
-    public function __invoke(Error $error) {
+    public function __invoke(\SlimPower\Authentication\Error $error) {
         $this->sendErrorResponse($error);
     }
 
