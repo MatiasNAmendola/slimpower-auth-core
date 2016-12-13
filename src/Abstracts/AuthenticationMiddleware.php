@@ -35,9 +35,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication;
+namespace SlimPower\Authentication\Abstracts;
 
-abstract class AbstractAuthentication extends \Slim\Middleware {
+abstract class AuthenticationMiddleware extends \Slim\Middleware {
 
     protected $error = null; /* Last error */
     protected $rules = array();
@@ -72,14 +72,14 @@ abstract class AbstractAuthentication extends \Slim\Middleware {
 
         /* If nothing was passed in options add default rules. */
         if (!isset($this->options["rules"])) {
-            $this->addRule(new RequestMethodRule(array(
+            $this->addRule(new \SlimPower\Authentication\Callables\RequestMethodRule(array(
                 "passthrough" => array("OPTIONS")
             )));
         }
 
         /* If path was given in easy mode add rule for it. */
         if (null !== ($this->options["path"])) {
-            $this->addRule(new RequestPathRule(array(
+            $this->addRule(new \SlimPower\Authentication\Callables\RequestPathRule(array(
                 "path" => $this->options["path"]
             )));
         }

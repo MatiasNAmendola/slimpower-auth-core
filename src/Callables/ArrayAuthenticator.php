@@ -33,9 +33,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication;
+namespace SlimPower\Authentication\Callables;
 
-class ArrayAuthenticator extends AbstractAuthenticator implements Interfaces\AuthenticatorInterface {
+use SlimPower\Authentication\Abstracts\CallableAuthenticator;
+
+class ArrayAuthenticator extends CallableAuthenticator implements Interfaces\AuthenticatorInterface {
 
     /**
      * Get default options

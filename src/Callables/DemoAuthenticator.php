@@ -33,23 +33,23 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication;
+namespace SlimPower\Authentication\Callables;
 
-class PdoAuthenticator extends AbstractAuthenticator implements Interfaces\AuthenticatorInterface {
+use SlimPower\Authentication\Abstracts\CallableAuthenticator;
+
+class DemoAuthenticator extends CallableAuthenticator implements Interfaces\AuthenticatorInterface {
+
+    const KEY_USER = "user";
+    const KEY_PWD = "password";
+    const VAL_USER = "admin";
+    const VAL_PWD = "demo";
 
     /**
      * Get default options
      * @return array
      */
     protected function getDefaultOptions() {
-        $options = array(
-            "table" => "users",
-            "user" => "user",
-            "hash" => "hash",
-            "show" => array() /* fields to show */
-        );
-
-        return $options;
+        return array();
     }
 
     /**
@@ -58,56 +58,14 @@ class PdoAuthenticator extends AbstractAuthenticator implements Interfaces\Authe
      * @return array|null User data or null
      */
     protected function authenticate(array $arguments) {
-        $user = $arguments["user"];
-        $password = $arguments["password"];
-
-        $sql = $this->sql();
-
-        $statement = $this->options["pdo"]->prepare($sql);
-        $statement->execute(array($user));
-
-        $success = false;
-
-        if ($user = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $success = password_verify($password, $user[$this->options["hash"]]);
-        }
+        $success = $arguments[self::KEY_USER] == self::VAL_USER && $arguments[self::KEY_PWD] == self::VAL_PWD;
 
         if (!$success) {
             $this->error = new \SlimPower\Authentication\Error();
             return null;
         } else {
-            $data = array();
-
-            foreach ($this->options["show"] as $fieldname) {
-                if (array_key_exists($fieldname, $user)) {
-                    $data[$fieldname] = $user[$fieldname];
-                }
-            }
-
-            return $data;
+            return array('user' => self::VAL_USER);
         }
-    }
-
-    public function sql() {
-        $driver = $this->options["pdo"]->getAttribute(\PDO::ATTR_DRIVER_NAME);
-
-        /* Workaround to test without sqlsrv with Travis */
-        if (defined("__PHPUNIT_ATTR_DRIVER_NAME__")) {
-            $driver = __PHPUNIT_ATTR_DRIVER_NAME__;
-        }
-
-        if ("sqlsrv" === $driver) {
-            $sql = "SELECT TOP 1 *
-                 FROM {$this->options['table']}
-                 WHERE {$this->options['user']} = ?";
-        } else {
-            $sql = "SELECT *
-                 FROM {$this->options['table']}
-                 WHERE {$this->options['user']} = ?
-                 LIMIT 1";
-        }
-
-        return preg_replace("!\s+!", " ", $sql);
     }
 
 }

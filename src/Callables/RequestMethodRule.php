@@ -35,27 +35,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication;
+namespace SlimPower\Authentication\Callables;
 
-abstract class AbstractError implements Interfaces\ErrorInterface {
+class RequestMethodRule implements Interfaces\RuleInterface {
 
-    /**
-     * SlimPower instance
-     * @var \SlimPower\Slim\Slim 
-     */
-    protected $app = null;
+    protected $options = array(
+        "passthrough" => array("OPTIONS")
+    );
 
-    public function __construct(\SlimPower\Slim\Slim $app) {
-        $this->app = $app;
+    public function __construct($options = array()) {
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
      * Invoke
-     * @param \SlimPower\Authentication\Error $error Error
+     * @param \SlimPower\Slim\Slim $app SlimPower instance
+     * @return boolean
      */
-    public function __invoke(Error $error) {
-        $this->sendErrorResponse($error);
+    public function __invoke(\SlimPower\Slim\Slim $app) {
+        //$environment = \Slim\Environment::getInstance();
+        $environment = $app->environment;
+        return !in_array($environment["REQUEST_METHOD"], $this->options["passthrough"]);
     }
 
-    abstract protected function sendErrorResponse(\SlimPower\Authentication\Error $error);
 }

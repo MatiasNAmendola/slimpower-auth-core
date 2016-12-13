@@ -33,9 +33,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace SlimPower\Authentication;
+namespace SlimPower\Authentication\Abstracts;
 
-abstract class AbstractAuthenticator implements Interfaces\AuthenticatorInterface {
+abstract class CallableAuthenticator implements Interfaces\AuthenticatorInterface {
 
     /**
      * SlimPower instance
