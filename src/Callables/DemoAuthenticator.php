@@ -36,8 +36,9 @@
 namespace SlimPower\Authentication\Callables;
 
 use SlimPower\Authentication\Abstracts\CallableAuthenticator;
+use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
 
-class DemoAuthenticator extends CallableAuthenticator implements Interfaces\AuthenticatorInterface {
+class DemoAuthenticator extends CallableAuthenticator implements AuthenticatorInterface {
 
     const KEY_USER = "user";
     const KEY_PWD = "password";

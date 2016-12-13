@@ -36,8 +36,9 @@
 namespace SlimPower\Authentication\Callables;
 
 use SlimPower\Authentication\Abstracts\CallableAuthenticator;
+use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
 
-class ArrayAuthenticator extends CallableAuthenticator implements Interfaces\AuthenticatorInterface {
+class ArrayAuthenticator extends CallableAuthenticator implements AuthenticatorInterface {
 
     /**
      * Get default options
