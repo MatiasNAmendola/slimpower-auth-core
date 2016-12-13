@@ -37,6 +37,10 @@
 
 namespace SlimPower\Authentication\Abstracts;
 
+use SlimPower\Authentication\Error;
+use SlimPower\Authentication\Callables\RequestMethodRule;
+use SlimPower\Authentication\Callables\RequestPathRule;
+
 abstract class AuthenticationMiddleware extends \Slim\Middleware {
 
     protected $error = null; /* Last error */
@@ -72,14 +76,14 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
 
         /* If nothing was passed in options add default rules. */
         if (!isset($this->options["rules"])) {
-            $this->addRule(new \SlimPower\Authentication\Callables\RequestMethodRule(array(
+            $this->addRule(new RequestMethodRule(array(
                 "passthrough" => array("OPTIONS")
             )));
         }
 
         /* If path was given in easy mode add rule for it. */
         if (null !== ($this->options["path"])) {
-            $this->addRule(new \SlimPower\Authentication\Callables\RequestPathRule(array(
+            $this->addRule(new RequestPathRule(array(
                 "path" => $this->options["path"]
             )));
         }
