@@ -37,6 +37,8 @@ namespace SlimPower\Authentication\Interfaces;
 
 interface TokenAuthInterface extends AuthenticatorInterface {
 
+    const KEY_TOKEN = "token";
+
     /**
      * Gets authentication token
      * @return string
