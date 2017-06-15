@@ -60,6 +60,14 @@ abstract class LoginAuthMiddleware extends AuthenticationMiddleware {
         }
     }
 
+    protected function validAuthenticatorInterface(\ReflectionClass $class) {
+        parent::validAuthenticatorInterface($class);
+        
+        if (!$class->implementsInterface('SlimPower\Authentication\Interfaces\LoginAuthenticatorInterface')) {
+            throw new \RuntimeException("Invalid Authenticator");
+        }
+    }
+
     /**
      * Get Params
      * @return array Params
