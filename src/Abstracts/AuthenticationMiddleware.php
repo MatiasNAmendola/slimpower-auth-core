@@ -40,6 +40,7 @@ namespace SlimPower\Authentication\Abstracts;
 use SlimPower\Authentication\Error;
 use SlimPower\Authentication\Callables\RequestMethodRule;
 use SlimPower\Authentication\Callables\RequestPathRule;
+use Psr\Log\LoggerInterface;
 
 abstract class AuthenticationMiddleware extends \Slim\Middleware {
 
@@ -47,6 +48,7 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
     protected $rules = array();
     protected $options = array();
     protected $data = array();
+    protected $logger;
 
     /**
      * Fetch data
@@ -91,10 +93,6 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
         $this->validAuthenticator();
     }
 
-    /**
-     * Valid autenticator
-     * @throws \RuntimeException
-     */
     private function validAuthenticator() {
         /* There must be an authenticator either passed via options */
         if (null === $this->options["authenticator"]) {
@@ -104,6 +102,10 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
         $className = get_class($this->options["authenticator"]);
         $class = new \ReflectionClass($className);
 
+        $this->validAuthenticatorInterface($class);
+    }
+
+    protected function validAuthenticatorInterface(\ReflectionClass $class) {
         if (!$class->implementsInterface('SlimPower\Authentication\Interfaces\AuthenticatorInterface')) {
             throw new \RuntimeException("Invalid Authenticator");
         }
@@ -157,8 +159,7 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
             $this->callError();
             return;
         }
-        
-        /* Add custom property! */
+
         $this->app->userData = $authenticator->getData();
 
         if (!$this->customValidation()) {
@@ -259,10 +260,10 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
         if (!($this->error instanceof Error)) {
             $this->error = new Error();
         }
-        
+
         $status = $this->error->getStatus();
         $this->app->response->status($status);
-        
+
         if (is_callable($this->options["error"])) {
             $this->options["error"]($this->error);
         }
@@ -431,6 +432,41 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
     public function addRule($callable) {
         $this->rules->push($callable);
         return $this;
+    }
+
+    /**
+     * Get the logger
+     *
+     * @return Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger() {
+        return $this->logger;
+    }
+
+    /**
+     * Set the logger
+     *
+     * @param Psr\Log\LoggerInterface $logger
+     * @return self
+     */
+    public function setLogger(LoggerInterface $logger = null) {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * Logs with an arbitrary level.
+     *
+     * @param mixed  $level
+     * @param string $message
+     * @param array  $context
+     *
+     * @return null
+     */
+    public function log($level, $message, array $context = array()) {
+        if ($this->logger) {
+            return $this->logger->log($level, $message, $context);
+        }
     }
 
 }
