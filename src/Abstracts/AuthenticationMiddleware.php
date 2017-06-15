@@ -100,10 +100,10 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
         $className = get_class($this->options["authenticator"]);
         $class = new \ReflectionClass($className);
 
-        $this->validAuthenticatorInterface($class);
+        $this->validAuthenticatorStructure($class);
     }
     
-    protected function validAuthenticatorInterface(\ReflectionClass $class) {
+    protected function validAuthenticatorStructure(\ReflectionClass $class) {
         if (!$class->implementsInterface('SlimPower\Authentication\Interfaces\AuthenticatorInterface')) {
             throw new \RuntimeException("Invalid Authenticator");
         }
