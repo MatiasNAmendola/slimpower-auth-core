@@ -158,6 +158,7 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
             return;
         }
         
+        /* Add custom property! */
         $this->app->userData = $authenticator->getData();
 
         if (!$this->customValidation()) {
