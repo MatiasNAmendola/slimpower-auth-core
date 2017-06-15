@@ -53,6 +53,14 @@ abstract class TokenAuthMiddleware extends AuthenticationMiddleware {
         $this->options = array_replace_recursive($base, $this->options);
     }
 
+    protected function validAuthenticatorInterface(\ReflectionClass $class) {
+        parent::validAuthenticatorInterface($class);
+        
+        if (!$class->implementsInterface('SlimPower\Authentication\Interfaces\TokenAuthenticatorInterface')) {
+            throw new \RuntimeException("Invalid Authenticator");
+        }
+    }
+
     protected function customValidation() {
         $token = $this->data[self::KEY_TOKEN];
         $details = '';
