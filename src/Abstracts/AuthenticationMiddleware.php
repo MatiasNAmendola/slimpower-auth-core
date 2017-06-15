@@ -157,6 +157,8 @@ abstract class AuthenticationMiddleware extends \Slim\Middleware {
             $this->callError();
             return;
         }
+        
+        $this->app->userData = $authenticator->getData();
 
         if (!$this->customValidation()) {
             $this->callError();
