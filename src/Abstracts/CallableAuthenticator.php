@@ -117,11 +117,11 @@ abstract class CallableAuthenticator implements AuthenticatorInterface {
 
         if (!is_null($data)) {
             $this->data = $data;
-            $this->app->jwtdata = $data;
+            $this->app->tokenData = $data;
             return true;
         } else {
             $this->data = array();
-            $this->app->jwtdata = null;
+            $this->app->tokenData = null;
             return false;
         }
     }
