@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of Slim HTTP Basic Authentication middleware
+ * This file is part of Slim Authentication core
  *
  * @category   Authentication
  * @package    SlimPower
@@ -35,13 +35,11 @@
 
 namespace SlimPower\Authentication\Callables;
 
-use SlimPower\Authentication\Abstracts\CallableAuthenticator;
-use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
+use SlimPower\Authentication\Abstracts\LoginCallableAuthenticator;
+use SlimPower\Authentication\Interfaces\LoginAuthenticatorInterface;
 
-class DemoAuthenticator extends CallableAuthenticator implements AuthenticatorInterface {
+class DemoAuthenticator extends LoginCallableAuthenticator implements LoginAuthenticatorInterface {
 
-    const KEY_USER = "user";
-    const KEY_PWD = "password";
     const VAL_USER = "admin";
     const VAL_PWD = "demo";
 
@@ -55,11 +53,12 @@ class DemoAuthenticator extends CallableAuthenticator implements AuthenticatorIn
 
     /**
      * Authenticate
-     * @param array $arguments Arguments
+     * @param string $username Username
+     * @param string $password Password
      * @return array|null User data or null
      */
-    protected function authenticate(array $arguments) {
-        $success = $arguments[self::KEY_USER] == self::VAL_USER && $arguments[self::KEY_PWD] == self::VAL_PWD;
+    public function authenticate($username, $password) {
+        $success = $username == self::VAL_USER && $password == self::VAL_PWD;
 
         if (!$success) {
             $this->error = new \SlimPower\Authentication\Error();
