@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of Slim HTTP Basic Authentication middleware
+ * This file is part of Slim Authentication core
  *
  * @category   Authentication
  * @package    SlimPower
@@ -35,10 +35,19 @@
 
 namespace SlimPower\Authentication\Callables;
 
-use SlimPower\Authentication\Abstracts\CallableAuthenticator;
-use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
+use SlimPower\Authentication\Abstracts\LoginCallableAuthenticator;
+use SlimPower\Authentication\Interfaces\LoginAuthenticatorInterface;
 
-class PdoAuthenticator extends CallableAuthenticator implements AuthenticatorInterface {
+class PdoAuthenticator extends LoginCallableAuthenticator implements LoginAuthenticatorInterface {
+
+    /**
+     * Constructor
+     * @param \SlimPower\Slim\Slim $app SlimPower instance
+     * @param array $options Options
+     */
+    public function __construct(\SlimPower\Slim\Slim $app, array $options = array()) {
+        parent::__construct($app, $options);
+    }
 
     /**
      * Get default options
@@ -57,21 +66,26 @@ class PdoAuthenticator extends CallableAuthenticator implements AuthenticatorInt
 
     /**
      * Authenticate
-     * @param array $arguments Arguments
+     * @param string $username Username
+     * @param string $password Password
      * @return array|null User data or null
      */
-    protected function authenticate(array $arguments) {
-        $user = $arguments["user"];
-        $password = $arguments["password"];
+    public function authenticate($username, $password) {
+        if (!$this->hasPDO()) {
+            return NULL;
+        }
 
         $sql = $this->sql();
 
-        $statement = $this->options["pdo"]->prepare($sql);
-        $statement->execute(array($user));
+        /* @var $pdo \PDO */
+        $pdo = $this->options["pdo"];
+        $statement = $pdo->prepare($sql);
+        $statement->execute(array($username));
 
         $success = false;
+        $user = $statement->fetch(\PDO::FETCH_ASSOC);
 
-        if ($user = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        if ($user) {
             $success = password_verify($password, $user[$this->options["hash"]]);
         }
 
@@ -92,6 +106,10 @@ class PdoAuthenticator extends CallableAuthenticator implements AuthenticatorInt
     }
 
     public function sql() {
+        if (!$this->hasPDO()) {
+            return NULL;
+        }
+
         $driver = $this->options["pdo"]->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
         /* Workaround to test without sqlsrv with Travis */
@@ -111,6 +129,18 @@ class PdoAuthenticator extends CallableAuthenticator implements AuthenticatorInt
         }
 
         return preg_replace("!\s+!", " ", $sql);
+    }
+
+    private function hasPDO() {
+        $instanced = FALSE;
+
+        if (isset($this->options["pdo"]) && !is_null($this->pdo)) {
+            if ($this->options["pdo"] instanceof \PDO) {
+                $instanced = TRUE;
+            }
+        }
+
+        return $instanced;
     }
 
 }
