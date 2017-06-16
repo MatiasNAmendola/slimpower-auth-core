@@ -35,10 +35,10 @@
 
 namespace SlimPower\Authentication\Callables;
 
-use SlimPower\Authentication\Abstracts\CallableAuthenticator;
-use SlimPower\Authentication\Interfaces\AuthenticatorInterface;
+use SlimPower\Authentication\Abstracts\LoginCallableAuthenticator;
+use SlimPower\Authentication\Interfaces\LoginAuthenticatorInterface;
 
-class ArrayAuthenticator extends CallableAuthenticator implements AuthenticatorInterface {
+class ArrayAuthenticator extends LoginCallableAuthenticator implements LoginAuthenticatorInterface {
 
     /**
      * Get default options
@@ -54,20 +54,18 @@ class ArrayAuthenticator extends CallableAuthenticator implements AuthenticatorI
 
     /**
      * Authenticate
-     * @param array $arguments Arguments
+     * @param string $username Username
+     * @param string $password Password
      * @return array|null User data or null
      */
-    protected function authenticate(array $arguments) {
-        $user = $arguments["user"];
-        $password = $arguments["password"];
-
-        $success = isset($this->options["users"][$user]) && $this->options["users"][$user] === $password;
+    public function authenticate($username, $password) {
+        $success = isset($this->options["users"][$username]) && $this->options["users"][$password] === $password;
 
         if (!$success) {
             $this->error = new \SlimPower\Authentication\Error();
             return null;
         } else {
-            return array('user' => $user);
+            return array('user' => $username);
         }
     }
 
