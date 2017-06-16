@@ -124,14 +124,19 @@ abstract class LoginCallableAuthenticator implements LoginAuthenticatorInterface
         } else {
             $data = NULL;
         }
+        
+        $success = FALSE;
 
         if (!is_null($data)) {
             $this->data = $data;
-            return true;
+            $success = true;
         } else {
             $this->data = array();
-            return false;
+            $success = false;
         }
+
+        $this->app->userData = $this->data;
+        return $success;
     }
 
 }
