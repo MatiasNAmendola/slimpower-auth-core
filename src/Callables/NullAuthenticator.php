@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of Slim HTTP Basic Authentication middleware
+ * This file is part of Slim Authentication core
  *
  * @category   Authentication
  * @package    SlimPower
